@@ -6,13 +6,12 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
 $user_name = htmlspecialchars($data['user_name']);
-$password = $data['password'];
-
+$password = password_hash($data['password'], PASSWORD_DEFAULT);
  try{
     $checkEmail = $connection->prepare("SELECT * FROM users WHERE email = ?");
     $checkEmail->execute([$email]);
 
-    if ($checkEmail->rowCount>0){
+    if ($checkEmail->rowCount()>0){
         echo json_encode(["message" => "Email already exists"]);
         exit();
     }
